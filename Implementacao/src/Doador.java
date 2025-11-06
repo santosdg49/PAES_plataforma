@@ -18,7 +18,7 @@ public class Doador extends Usuario {
     public void consultar_historico() {
         System.out.println("Doador: " + this.getNome());
         for(Doacao doacao:historico_doacoes) {
-            System.out.printf("Valor: %.2f\nLocal: %s\nData: %s\n", doacao.getValor(), doacao.getLocal_doacao(), doacao.getData_doacao());
+            System.out.printf("Valor: %.2f\nLocal: %s\nData: %s\n", doacao.getValor(), doacao.getLocal_evento(), doacao.getData_data_evento());
             System.out.println();
         }
     }
