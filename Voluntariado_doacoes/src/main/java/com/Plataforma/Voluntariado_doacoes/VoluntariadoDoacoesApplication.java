@@ -1,13 +1,13 @@
-package com.example.demo;
+package com.Plataforma.Voluntariado_doacoes;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DemoRestApplication {
+public class VoluntariadoDoacoesApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoRestApplication.class, args);
+		SpringApplication.run(VoluntariadoDoacoesApplication.class, args);
 	}
 
 }
