@@ -1,10 +1,9 @@
-package com.Evento.evento_service.domain;
+package com.Historico.historico_service.api.dto;
 
 import java.util.UUID;
 
-public record Evento(
-        UUID ClienteID,
-        UUID ID,
+public record EventoDTO(
+        UUID EventoID,
         String Local_evento,
         String Data_evento,
         Double valor) {
