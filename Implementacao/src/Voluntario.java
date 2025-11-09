@@ -18,7 +18,7 @@ public class Voluntario extends Usuario {
         for(Ajuda ajuda:historico_horas) {
             System.out.printf("horas trabalhadas: %.2f\n"
                     + "Local: %s\n"
-                    + "Data: %s\n", ajuda.getHoras_trabalhadas(), ajuda.getLocal_trabalho(), ajuda.getData_trabalho());
+                    + "Data: %s\n", ajuda.getHoras_trabalhadas(), ajuda.getLocal_evento(), ajuda.getData_data_evento());
             System.out.println();
         }
     }

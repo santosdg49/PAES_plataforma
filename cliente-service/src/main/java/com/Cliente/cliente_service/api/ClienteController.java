@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/plataforma/cliente")
+@RequestMapping("/api/plataforma/clientes")
 public class ClienteController {
     private final ClienteRepo banco;
 
