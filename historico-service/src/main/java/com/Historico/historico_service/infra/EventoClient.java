@@ -14,7 +14,7 @@ import java.util.UUID;
 public class EventoClient {
 
     public record EventoDTO(UUID id, String Local, String Data_evento, Double valor) {}
-    private static RestClient rest = null; //Cliente HTTP sincrono do Spring
+    private RestClient rest = null; //Cliente HTTP sincrono do Spring
 
     public EventoClient(@Value("${eventos.url}") String baseUrl){
         var f = new SimpleClientHttpRequestFactory();
@@ -23,7 +23,7 @@ public class EventoClient {
         this.rest = RestClient.builder().baseUrl(baseUrl).requestFactory(f).build();
     }
 
-    public static EventoDTO porId(UUID id){
+    public EventoDTO porId(UUID id){
         try {
             return rest.get().uri("/eventos/{id}", id).retrieve().body(EventoDTO.class);
         } catch (HttpClientErrorException.NotFound e) {

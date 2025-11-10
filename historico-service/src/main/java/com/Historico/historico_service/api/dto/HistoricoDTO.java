@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record HistoricoDTO(
+        UUID UsuarioID,
         UUID ID,
         List<EventoDTO> eventos) {
 }

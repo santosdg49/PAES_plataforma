@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/Plataforma/eventos")
+@RequestMapping("/api/plataforma/eventos")
 public class EventoController{
     private final EventoRepo banco;
 
