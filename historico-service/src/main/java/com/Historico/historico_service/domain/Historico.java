@@ -12,7 +12,7 @@ public class Historico {
     private List<Evento> eventos;
 
     public Historico(UUID ID, UUID UsuarioID) {
-        this.ID = UUID.randomUUID();
+        this.ID = ID;
         this.UsuarioID = UsuarioID;
         this.eventos = new ArrayList<>();
     }

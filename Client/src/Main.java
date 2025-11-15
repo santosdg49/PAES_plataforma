@@ -17,9 +17,7 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-
         criarUsuario(sc);
-
     }
 
     private static void criarUsuario(Scanner sc) {
@@ -35,7 +33,7 @@ public class Main {
             String cpf = sc.nextLine();
 
             // Montando JSON manualmente
-            String json = String.format("{\"nome\":\"%s\",\"endereco\":\"%s\",\"idade\":\"%d\",\"cpf\":%s}",
+            String json = String.format("{\"nome\":\"%s\",\"endereco\":\"%s\",\"idade\":%d,\"cpf\":%s}",
                     nome, end, idade, cpf);
 
             HttpClient client = HttpClient.newHttpClient();
@@ -83,5 +81,103 @@ public class Main {
         }
     }
 
+    private static void criarCliente(Scanner sc) {
+        try {
+            System.out.print("Isira o nome da instituição: ");
+            String nome = sc.nextLine();
+            System.out.print("Insira seu endereço: ");
+            String end = sc.nextLine();
+            System.out.print("Insira seu CNPJ: ");
+            String cnpj = sc.nextLine();
+
+            String json = String.format("{\"nome\":\"%s\",\"endereco\":\"%s\",\"cnpj\":\"%s\"}",
+                    nome, end, cnpj);
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(CLientURl))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Status: " + response.statusCode());
+            System.out.println("Resposta JSON: " + response.body());
+
+
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void criarEvento(Scanner sc){
+        try {
+            System.out.print("Isira a instituição responsável pelo evento: ");
+            String inst = sc.nextLine();
+            System.out.print("Insira o Local do evento: ");
+            String local = sc.nextLine();
+            System.out.print("Insira a data do evento: ");
+            String data = sc.nextLine();
+            System.out.print("Insira o valor a ser doado: ");
+            Double valor = sc.nextDouble();
+            sc.nextLine();
+
+            String json = String.format("{\"instituicao_responsavel\":\"%s\",\"Local_evento\":\"%s\",\"" +
+                            "Data_evento\":\"%s\",\"valor\":%s}",
+                    inst, local, data, valor);
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(EventoURl))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Status: " + response.statusCode());
+            System.out.println("Resposta JSON: " + response.body());
+
+
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // IMPLEMENTAR
+    public static void AdicionarEventoNoHistorico(Scanner sc){
+
+    }
+
+    public static void ListarEventos(){
+        try{
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(EventoURl))
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                System.out.println("Lista dos eventos:");
+                System.out.println(response.body());
+            }
+            else{
+                System.out.println("Não foi possível visualizar os eventos.");
+            }
+
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

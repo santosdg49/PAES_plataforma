@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Positive;
 import java.util.UUID;
 
 public record NovoEventoDTO(
-        @NotBlank UUID ClienteID,
+        @NotBlank String instituicao_responsavel,
         @NotBlank String Local_evento,
         @NotBlank String Data_evento,
         @Positive Double valor) {

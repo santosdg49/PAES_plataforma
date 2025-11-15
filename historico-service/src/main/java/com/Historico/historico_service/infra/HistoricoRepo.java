@@ -3,6 +3,9 @@ package com.Historico.historico_service.infra;
 import com.Historico.historico_service.domain.Historico;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -21,5 +24,9 @@ public class HistoricoRepo {
         var h = db.get(id);
         if (h == null) throw new NoSuchElementException("Historico "+id+" não existe");
         return h;
+    }
+
+    public List<Historico> findAll(){
+        return new ArrayList<>(db.values());
     }
 }

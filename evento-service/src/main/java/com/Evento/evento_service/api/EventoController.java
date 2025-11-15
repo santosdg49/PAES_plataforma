@@ -19,17 +19,26 @@ public class EventoController{
         this.banco = banco;
     }
 
+    @GetMapping
+    public List<EventoDTO> listarEventos() {
+        return banco.findAll().stream().map(evento -> new EventoDTO(evento.ID(),
+                evento.instituicao_responsavel(),
+                evento.Local_evento(),
+                evento.Data_evento(),
+                evento.valor())
+        ).toList();
+    }
 
     @GetMapping("/{id}")
     public EventoDTO porId(@PathVariable("id") UUID id) {
         var e = banco.byId(id);
-        return new EventoDTO(e.ClienteID(), e.ID(), e.Local_evento(), e.Data_evento(), e.valor());
+        return new EventoDTO( e.ID(), e.instituicao_responsavel(),e.Local_evento(), e.Data_evento(), e.valor());
     }
 
     @PostMapping
     @ResponseStatus(org.springframework.http.HttpStatus.CREATED)
     public EventoDTO criar(@Valid @RequestBody NovoEventoDTO dto) {
-        var e = banco.save(new Evento(java.util.UUID.randomUUID(), dto.ClienteID(), dto.Local_evento(), dto.Data_evento(), dto.valor()));
-        return new EventoDTO(e.ClienteID(), e.ID(), e.Local_evento(), e.Data_evento(), e.valor());
+        var e = banco.save(new Evento(java.util.UUID.randomUUID(), dto.instituicao_responsavel(),dto.Local_evento(), dto.Data_evento(), dto.valor()));
+        return new EventoDTO( e.ID(),e.instituicao_responsavel(), e.Local_evento(), e.Data_evento(), e.valor());
     }
 }

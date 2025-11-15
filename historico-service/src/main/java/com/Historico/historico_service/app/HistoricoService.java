@@ -36,6 +36,7 @@ public class HistoricoService {
         return toDTO(repo.byId(id));
     }
 
+
     public EventoDTO adicionarEvento(UUID historicoId, NovoEventoDTO in) {
         var hist = repo.byId(historicoId);
 
@@ -46,12 +47,12 @@ public class HistoricoService {
             throw new IllegalArgumentException("Valor deve ser > 0");
         }
 
-        var Evento = new Evento(in.ClienteID(),e.id(), in.Local_evento(), e.Data_evento(), in.valor());
+        var Evento = new Evento(e.id(), in.Instituicao_responsavel(),in.Local_evento(), e.Data_evento(), in.valor());
 
         hist.getEventos().add(Evento);
         repo.save(hist);
 
-        return new EventoDTO(Evento.ClienteID(),Evento.EventoID(), Evento.Local_evento(), Evento.Data_evento(), Evento.valor());
+        return new EventoDTO(Evento.EventoID(), Evento.Instituicao_responsavel(),Evento.Local_evento(), Evento.Data_evento(), Evento.valor());
     }
 
 
@@ -59,7 +60,7 @@ public class HistoricoService {
     private HistoricoDTO toDTO(Historico h) {
         List<EventoDTO> eventos = new ArrayList<>();
         for (var i : h.getEventos()) {
-            eventos.add(new EventoDTO(i.ClienteID(),i.EventoID(), i.Local_evento(), i.Data_evento(), i.valor()));
+            eventos.add(new EventoDTO(i.EventoID(), i.Instituicao_responsavel(),i.Local_evento(), i.Data_evento(), i.valor()));
         }
         return new HistoricoDTO(h.getUsuarioID(), h.getID(), eventos);
     }
@@ -69,5 +70,18 @@ public class HistoricoService {
         var removed = h.getEventos().removeIf(i -> i.EventoID().equals(eventoId));
         if (!removed) throw new java.util.NoSuchElementException("Item " + eventoId + " não existe no histrico " + historicoId);
         repo.save(h);
+    }
+
+    public List<HistoricoDTO> listarTodos(){
+        return repo.findAll().stream().map(h -> new HistoricoDTO(h.getUsuarioID(),
+                h.getID(), h.getEventos().stream()
+                .map(e -> new EventoDTO(
+                        e.EventoID(),
+                        e.Instituicao_responsavel(),
+                        e.Local_evento(),
+                        e.Data_evento(),
+                        e.valor()
+                )).toList()))
+                .toList();
     }
 }

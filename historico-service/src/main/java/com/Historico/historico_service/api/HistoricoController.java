@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -40,7 +42,12 @@ public class HistoricoController {
 
     @DeleteMapping("/{id}/eventos/{eventoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delEvento(@PathVariable("id") UUID id, @PathVariable("EventoID") UUID eventoId){
+    public void delEvento(@PathVariable("id") UUID id, @PathVariable("eventoID") UUID eventoId){
         service.removerEvento(id, eventoId);
+    }
+
+    @GetMapping
+    public List<HistoricoDTO> listarHistoricos(){
+        return service.listarTodos();
     }
 }
