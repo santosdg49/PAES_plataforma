@@ -18,13 +18,27 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        criarUsuario(sc);
-        System.out.println();
-        criarEvento(sc);
-        System.out.println();
-        ListarEventos();
-        System.out.println();
+        //criarUsuario(sc);
+        //System.out.println();
+        //criarEvento(sc);
+        //System.out.println();
+        //ListarEventos();
+        //System.out.println();
+        //AdicionarEventoNoHistorico(sc);
+
+        //criarUsuario(sc);
+
+        UUID u = UUID.fromString("b05f34cd-a95a-4766-ae8d-cb2546b67993");
+
+        System.out.println(obterHistoricoPorUsuario(u));
+
+        //criarEvento(sc);
+
+        UUID e = UUID.fromString("fad9ffb0-0af0-4ac6-8f84-7e4dc17cd525");
+
         AdicionarEventoNoHistorico(sc);
+
+
     }
 
     // CRIA USUARIO E SEU HISTORICO
@@ -205,8 +219,7 @@ public class Main {
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
 
-            HttpResponse<String> res =
-                    client.send(req, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> res = client.send(req, HttpResponse.BodyHandlers.ofString());
 
             System.out.println("Status: " + res.statusCode());
             System.out.println("Resposta: " + res.body());
