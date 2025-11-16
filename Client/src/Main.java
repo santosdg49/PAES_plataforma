@@ -1,5 +1,6 @@
 import org.json.JSONObject;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -18,8 +19,15 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         criarUsuario(sc);
+        System.out.println();
+        criarEvento(sc);
+        System.out.println();
+        ListarEventos();
+        System.out.println();
+        AdicionarEventoNoHistorico(sc);
     }
 
+    // CRIA USUARIO E SEU HISTORICO
     private static void criarUsuario(Scanner sc) {
         try {
             System.out.print("Isira seu nome: ");
@@ -52,14 +60,14 @@ public class Main {
             UUID userID = UUID.fromString(jsonObject.getString("ID"));
             criarHistorico(userID);
 
-
-
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
 
+    // CRIA O HISTORICO - FUNÇÃO USADA NA CRIAÇÃO DO USUARIO
     public static void  criarHistorico(UUID UsuarioID) {
         try {
             String json = String.format("{\"UsuarioID\":\"%s\"}", UsuarioID);
@@ -81,6 +89,7 @@ public class Main {
         }
     }
 
+    // CRIA O CLIENTE
     private static void criarCliente(Scanner sc) {
         try {
             System.out.print("Isira o nome da instituição: ");
@@ -110,8 +119,10 @@ public class Main {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
+    // CRIA O EVENTO
     public static void criarEvento(Scanner sc){
         try {
             System.out.print("Isira a instituição responsável pelo evento: ");
@@ -145,13 +156,68 @@ public class Main {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
-    // IMPLEMENTAR
+    // ADICIONA UM EVENTO EXISTENTE NO HISTORICO DE UM USUARIO
     public static void AdicionarEventoNoHistorico(Scanner sc){
+        System.out.print("Insira o ID od usuario: ");
+        UUID usuarioID = UUID.fromString(sc.nextLine());
+        System.out.print("Insira o ID do evento: ");
+        UUID eventoID = UUID.fromString(sc.nextLine());
+
+        // 1. Buscar o histórico do usuário
+        UUID historicoID = obterHistoricoPorUsuario(usuarioID);
+
+        if (historicoID == null) {
+            System.out.println("Histórico não encontrado para esse usuário.");
+            return;
+        }
+
+        // 2. Buscar evento existente
+        JSONObject evento = obterEvento(eventoID);
+
+        if (evento == null) {
+            System.out.println("Evento não encontrado.");
+            return;
+        }
+
+        try {
+            // Montar JSON no formato do NovoEventoDTO
+            String json = String.format(
+                    "{\"EventoID\":\"%s\",\"Instituicao_responsavel\":\"%s\", " +
+                            "\"Local_evento\":\"%s\", " +
+                            "\"Data_evento\":\"%s\", " +
+                            "\"valor\":%s}",
+                    evento.getString("ID"),
+                    evento.getString("instituicao_responsavel"),
+                    evento.getString("Local_evento"),
+                    evento.getString("Data_evento"),
+                    evento.getDouble("valor")
+            );
+
+            // 3. Chamar API de histórico para adicionar evento
+            HttpClient client = HttpClient.newHttpClient();
+
+            HttpRequest req = HttpRequest.newBuilder()
+                    .uri(URI.create(HistoricoURl + "/" + historicoID + "/eventos"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> res =
+                    client.send(req, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Status: " + res.statusCode());
+            System.out.println("Resposta: " + res.body());
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
+    // LISTA OS EVENTOS QUE ESTÃO EM ARMAZENAMENTO LOCAL
     public static void ListarEventos(){
         try{
             HttpClient client = HttpClient.newHttpClient();
@@ -179,5 +245,68 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
+
+    // PESQUISA NO REPOSITÓRIO UM HISTORICO QUE TENHO USUARIOID IGUAL AO PASSADO NO PARÂMETRO E RETORNA UUID DO HISTORICO
+    public static UUID obterHistoricoPorUsuario(UUID usuarioID) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(HistoricoURl))
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response =
+                    client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                System.out.println("Erro ao buscar historicos.");
+                return null;
+            }
+
+            var arr = new org.json.JSONArray(response.body());
+
+            for (int i = 0; i < arr.length(); i++) {
+                var h = arr.getJSONObject(i);
+                if (h.getString("UsuarioID").equals(usuarioID.toString())) {
+                    return UUID.fromString(h.getString("ID"));
+                }
+            }
+
+            return null;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // RETORNA O JSON DE UM EVENTO ESPECIFICO
+    public static JSONObject obterEvento(UUID eventoID) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+
+            HttpRequest req = HttpRequest.newBuilder()
+                    .uri(URI.create(EventoURl + "/" + eventoID))
+                    .header("Accept", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> res =
+                    client.send(req, HttpResponse.BodyHandlers.ofString());
+
+            if (res.statusCode() != 200) {
+                System.out.println("Erro ao buscar evento");
+                return null;
+            }
+
+            return new JSONObject(res.body());
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
 }
