@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/plataforma/eventos")
-public class EventoController{
+public class    EventoController{
     private final EventoRepo banco;
 
     public EventoController(EventoRepo banco) {
