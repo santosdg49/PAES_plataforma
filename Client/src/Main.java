@@ -20,23 +20,15 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         //criarUsuario(sc);
         //System.out.println();
+        //criarCliente(sc);
+        //System.out.println();
         //criarEvento(sc);
         //System.out.println();
         //ListarEventos();
         //System.out.println();
-        //AdicionarEventoNoHistorico(sc);
 
-        //criarUsuario(sc);
-
-        UUID u = UUID.fromString("b05f34cd-a95a-4766-ae8d-cb2546b67993");
-
-        System.out.println(obterHistoricoPorUsuario(u));
-
-        //criarEvento(sc);
-
-        UUID e = UUID.fromString("fad9ffb0-0af0-4ac6-8f84-7e4dc17cd525");
-
-        AdicionarEventoNoHistorico(sc);
+        System.out.println(obterHistoricoPorUsuario(UUID.fromString("48c3b175-7d9a-45cf-ad16-4b68a0ce1941")));
+        System.out.println(UUID.fromString("02684433-a11d-44f1-91a6-b31bd8849cd7"));
 
 
     }
